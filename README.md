@@ -3,6 +3,15 @@
 This repository contains the `nils_ost.lpos` Ansible Collection. For install and configure a instance of [LanPartyOnboardingSystem](https://github.com/nils-ost/LanPartyOnboardingSystem)
 
 <!--start requires_ansible-->
+## Ansible version compatibility
+
+This collection has been tested against following Ansible versions: **>=2.13.9**.
+
+For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
+fully qualified collection name (for example, `cisco.ios.ios`).
+Plugins and modules within a collection may be tested with only specific Ansible versions.
+A collection may contain metadata that identifies these versions.
+PEP440 is the schema used to describe the versions of Ansible.
 <!--end requires_ansible-->
 
 ## External requirements
@@ -13,6 +22,11 @@ As this collection is intended to do it's module call `delegate_to: localhost` i
 ## Included content
 
 <!--start collection content-->
+### Modules
+Name | Description
+--- | ---
+[nils_ost.lpos.login](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.login_module.rst)|creates authenticated session, to be used by further modules
+
 <!--end collection content-->
 
 ### Roles
