@@ -1,0 +1,56 @@
+---
+- name: create compose directory
+  ansible.builtin.file:
+    path: "{{ lpos_compose_dir }}"
+    state: directory
+    mode: "0755"
+  register: compose_dir
+
+- name: write compose file
+  ansible.builtin.template:
+    src: templates/docker-compose.yml.j2
+    dest: "{{ [lpos_compose_dir, 'docker-compose.yml'] | path_join }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: compose_file
+
+- name: stop compose service
+  community.docker.docker_compose_v2:
+    project_src: "{{ lpos_compose_dir }}"
+    remove_orphans: true
+    state: stopped
+    timeout: 11
+  when: compose_file.changed and not compose_dir.changed
+
+- name: start compose service
+  community.docker.docker_compose_v2:
+    project_src: "{{ lpos_compose_dir }}"
+    remove_orphans: true
+    pull: "{{ lpos_auto_upgrade | ternary('always', 'missing') }}"
+    state: present
+    wait: true
+    wait_timeout: 10
+  register: compose_start
+
+- name: wait for service to be reachable
+  ansible.builtin.wait_for:
+    host: "{{ ansible_host }}"
+    port: 80
+    timeout: 30
+    connect_timeout: 2
+    sleep: 2
+    delay: 2
+  when: compose_start.changed
+
+- name: wait for service to finish startup
+  ansible.builtin.uri:
+    method: GET
+    url: "http://{{ ansible_host }}/api/setting/"
+    validate_certs: false
+    follow_redirects: none
+    return_content: true
+  register: _result
+  until: _result.code == 200
+  retries: 60
+  delay: 1

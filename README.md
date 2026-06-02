@@ -33,7 +33,7 @@ Name | Description
 
 Name | Description
 --- | ---
-[nils_ost.lpos.install_with_docker](https://github.com/nils-ost/ansible-collection-lpos/blob/main/roles/install_with_docker/README.md)|installs LanPartyOnboardingSystem within docker
+[nils_ost.lpos.install_with_docker](https://github.com/nils-ost/ansible-collection-lpos/blob/main/roles/install_with_docker/README.md)|installs LPOS within docker
 
 ## Using this collection
 

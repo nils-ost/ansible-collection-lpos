@@ -1,0 +1,28 @@
+argument_specs:
+  main:
+    short_description: installs LPOS within docker
+    description: a role for installing LanPartyOnboardingSystem as docker containers with the help of compose
+    author:
+      - Nils Ost (@nils-ost)
+    version_added: 1.0.0
+    options:
+      lpos_timezone:
+        type: "str"
+        required: false
+        default: "Europe/Berlin"
+      lpos_compose_dir:
+        type: "str"
+        required: false
+        default: /opt/lpos
+      lpos_release:
+        type: "str"
+        required: false
+        default: latest
+      lpos_auto_upgrade:
+        type: "bool"
+        required: false
+        default: false
+      lpos_admin_pw:
+        type: "str"
+        required: false
+        default: password

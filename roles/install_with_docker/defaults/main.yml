@@ -1,0 +1,6 @@
+---
+lpos_timezone: Europe/Berlin
+lpos_compose_dir: /opt/lpos
+lpos_release: latest
+lpos_auto_upgrade: false
+lpos_admin_pw: password
