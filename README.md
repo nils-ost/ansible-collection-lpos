@@ -26,6 +26,8 @@ As this collection is intended to do it's module call `delegate_to: localhost` i
 Name | Description
 --- | ---
 [nils_ost.lpos.login](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.login_module.rst)|creates authenticated session, to be used by further modules
+[nils_ost.lpos.switch](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.switch_module.rst)|create, update or delete Switch configuration
+[nils_ost.lpos.vlan](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.vlan_module.rst)|create, update or delete VLAN configuration
 
 <!--end collection content-->
 

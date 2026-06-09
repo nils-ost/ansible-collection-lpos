@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright: (c) 2025, Nils Ost <home@nijos.de>
+# Copyright: (c) 2026, Nils Ost <home@nijos.de>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -65,6 +65,7 @@ EXAMPLES = r"""
     host: "{{ ansible_host }}"
     user: "{{ root_login }}"
     password: "{{ root_password }}"
+  delegate_to: localhost
   register: lpos
 """
 
