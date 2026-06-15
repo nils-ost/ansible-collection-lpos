@@ -13,16 +13,16 @@ from ansible.module_utils.basic import AnsibleModule
 
 DOCUMENTATION = r"""
 ---
-module: switch
+module: ippool
 
 author: Nils Ost (@nils-ost)
 
 version_added: "1.0.0"
 
-short_description: create, update or delete Switch configuration
+short_description: create, update or delete an IpPool
 
 description:
-    - This module creates, updates, deletes or just returns a LPOS Switch configuration
+    - This module creates, updates, deletes or just returns an LPOS IpPool
 
 options:
     url:
@@ -37,51 +37,39 @@ options:
         type: str
     desc:
         description:
-            - description for VLAN
+            - description for IpPool
             - used as primary identifier in this module
         required: true
         type: str
-    addr:
+    range_start:
         description:
-            - IP or DNS name to connect to Switch
+            - first IP of pool, defines start of range
+            - IP in dotted notation, e.g. 127.0.0.1
         required_if: state == present
         type: str
-        default: ""
-    user:
+        default: None
+    range_end:
         description:
-            - username used for login on Switch
+            - last IP of pool, defines end of range
+            - IP in dotted notation, e.g. 127.0.0.1
         required_if: state == present
         type: str
-        default: admin
-    pw:
+        default: None
+    mask:
         description:
-            - passwod used for login on Switch
+            - network mask according to range
+        required_if: false
+        type: int
+        default: 24
+    vlan_number:
+        description:
+            - VLAN number (not ID) of VLAN this IpPool belongs to
         required_if: state == present
-        type: str
-        default: ""
-    purpose:
-        description:
-            - defines the class of the Switch
-        required: false
-        type: str
-        default: core
-        choices: ["core", "participants", "mixed"]
-    onboarding_vlan_number:
-        description:
-            - VLAN number (not ID) of VLAN to be used for onboarding network on this Switch
-            - not required for Switches with purpose "core"
-        required_if: purpose in ["participants", "mixed"]
         type: int
         default: None
-    port_numbering_offset:
-        description:
-            - used to align the numbering of Ports in the frontend
-        required: false
-        type: int
-        default: 0
     state:
         description:
-            - if Switch should be created or deleted
+            - if IpPool should be created or deleted
         required: false
         type: str
         default: 'present'
@@ -89,44 +77,38 @@ options:
 """
 
 EXAMPLES = r"""
-# create Switch
-- name: create switch
-  nils_ost.lpos.switch:
+- name: create ippool
+  nils_ost.lpos.ippool:
     url: "{{ lpos.url }}"
     session_id: "{{ lpos.session_id }}"
-    desc: switch1
-    addr: 127.0.0.1
-    user: admin
-    pw: password
-    purpose: participants
-    onboarding_vlan_number: 10
+    desc: table1-play
+    range_start: 192.168.123.10
+    range_end: 192.168.123.15
+    mask: 24
+    vlan_number: 12
     state: present
   delegate_to: localhost
-  register: switch1
+  register: pool1
 
-# change the onboarding_vlan and numbering_offset of switch1
-- name: update description
-  nils_ost.lpos.switch:
+- name: edit ippool
+  nils_ost.lpos.ippool:
     url: "{{ lpos.url }}"
     session_id: "{{ lpos.session_id }}"
-    desc: switch1
-    addr: 127.0.0.1
-    user: admin
-    pw: password
-    purpose: participants
-    onboarding_vlan_number: 11
-    port_numbering_offset: 1
+    desc: table1-play
+    range_start: 192.168.123.10
+    range_end: 192.168.123.19
+    mask: 24
+    vlan_number: 12
     state: present
   delegate_to: localhost
-  register: switch1
+  register: pool1
 
-# delete the formaly created and updated switch1
-- name: delete switch
-  nils_ost.lpos.switch:
+- name: delete ippool
+  nils_ost.lpos.ippool:
     url: "{{ lpos.url }}"
     session_id: "{{ lpos.session_id }}"
-    desc: switch1
-    state: absend
+    desc: table1-play
+    state: absent
   delegate_to: localhost
 """
 
@@ -142,11 +124,10 @@ item:
 def data_as_expected(d1, d2):
     keys = [
         "desc",
-        "addr",
-        "user",
-        "purpose",
-        "onboarding_vlan_id",
-        "port_numbering_offset",
+        "mask",
+        "range_start",
+        "range_end",
+        "vlan_id",
     ]
     for k in keys:
         if k not in d1:
@@ -159,7 +140,7 @@ def data_as_expected(d1, d2):
 
 
 def search(url, session, desc):
-    uri = f"{url}/switch/"
+    uri = f"{url}/ippool/"
 
     response = session.get(uri)
     if not response.status_code == 200:
@@ -172,7 +153,7 @@ def search(url, session, desc):
 
 
 def create(url, session, data):
-    uri = f"{url}/switch/"
+    uri = f"{url}/ippool/"
 
     response = session.post(uri, json=data)
     if not response.status_code == 201:
@@ -181,7 +162,7 @@ def create(url, session, data):
 
 
 def update(url, session, data):
-    uri = f"{url}/switch/{data['id']}/"
+    uri = f"{url}/ippool/{data['id']}/"
 
     response = session.patch(uri, json=data)
     if not response.status_code == 200:
@@ -190,7 +171,7 @@ def update(url, session, data):
 
 
 def delete(url, session, data):
-    uri = f"{url}/switch/{data['id']}"
+    uri = f"{url}/ippool/{data['id']}"
 
     response = session.delete(uri)
     if not response.status_code == 200:
@@ -209,23 +190,33 @@ def get_vlan_id(url, session, number):
     return (False, f"VLAN with number '{number}' not found")
 
 
+def ip_octetts_to_int(oct1, oct2, oct3, oct4):
+    r = list()
+    r.append(hex(oct1).replace("0x", ""))
+    r.append(hex(oct2).replace("0x", ""))
+    r.append(hex(oct3).replace("0x", ""))
+    r.append(hex(oct4).replace("0x", ""))
+    for idx in range(4):
+        if len(r[idx]) < 2:
+            r[idx] = "0" + r[idx]
+    return int("".join(r), 16)
+
+
+def ip_dotted_to_int(str_input):
+    str_input = str_input.split("/")[0]
+    return ip_octetts_to_int(*[int(o) for o in str_input.split(".")])
+
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         url=dict(type="str", required=True),
         session_id=dict(type="str", required=True, no_log=True),
         desc=dict(type="str", required=True),
-        addr=dict(type="str", required=False, default=""),
-        user=dict(type="str", required=False, default="admin"),
-        pw=dict(type="str", required=False, default="", no_log=True),
-        purpose=dict(
-            type="str",
-            required=False,
-            default="core",
-            choices=["core", "participants", "mixed"],
-        ),
-        onboarding_vlan_number=dict(type="int", required=False, default=None),
-        port_numbering_offset=dict(type="int", required=False, default=0),
+        range_start=dict(type="str", required=False, default=None),
+        range_end=dict(type="str", required=False, default=None),
+        mask=dict(type="int", required=False, default=24),
+        vlan_number=dict(type="int", required=False, default=None),
         state=dict(type="str", default="present", choices=["absent", "present"]),
     )
 
@@ -247,9 +238,7 @@ def run_module():
         argument_spec=module_args,
         supports_check_mode=True,
         required_if=[
-            ("state", "present", ("addr", "user", "pw"), False),
-            ("purpose", "participants", ("onboarding_vlan_number")),
-            ("purpose", "mixed", ("onboarding_vlan_number")),
+            ("state", "present", ("range_start", "range_end", "vlan_id"), False),
         ],
     )
 
@@ -264,31 +253,25 @@ def run_module():
             module.fail_json(msg=f"error on searching for item: {item}", **result)
 
         if module.params["state"] == "present":
-            purposes = dict(
-                core=0,
-                participants=1,
-                mixed=2,
-            )
-
             vlan_id = None
-            if purposes[module.params["purpose"]] > 0:
-                success, vlan_id = get_vlan_id(
-                    url,
-                    session,
-                    module.params["onboarding_vlan_number"],
-                )
-                if not success:
-                    module.fail_json(msg=vlan_id, **result)
+            success, vlan_id = get_vlan_id(
+                url,
+                session,
+                module.params["vlan_number"],
+            )
+            if not success:
+                module.fail_json(msg=vlan_id, **result)
+
+            range_start = ip_dotted_to_int(module.params["range_start"])
+            range_end = ip_dotted_to_int(module.params["range_end"])
 
             data = dict(
                 id=None,
                 desc=module.params["desc"],
-                addr=module.params["addr"],
-                user=module.params["user"],
-                pw=module.params["pw"],
-                purpose=purposes[module.params["purpose"]],
-                onboarding_vlan_id=vlan_id,
-                port_numbering_offset=module.params["port_numbering_offset"],
+                range_start=range_start,
+                range_end=range_end,
+                mask=module.params["mask"],
+                vlan_id=vlan_id,
             )
 
             if item is None:

@@ -1,11 +1,11 @@
-.. _nils_ost.lpos.switch_module:
+.. _nils_ost.lpos.table_module:
 
 
-********************
-nils_ost.lpos.switch
-********************
+*******************
+nils_ost.lpos.table
+*******************
 
-**create, update or delete Switch configuration**
+**create, update or delete a Table**
 
 
 Version added: 1.0.0
@@ -17,7 +17,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This module creates, updates, deletes or just returns a LPOS Switch configuration
+- This module creates, updates, deletes or just returns a LPOS Table configuration
 
 
 
@@ -36,17 +36,17 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>addr</b>
+                    <b>add_ip_pool</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">""</div>
+                        <b>Default:</b><br/><div style="color: blue">"None"</div>
                 </td>
                 <td>
-                        <div>IP or DNS name to connect to Switch</div>
+                        <div>name (desc) of IpPool used for additional Devices on this Table</div>
                 </td>
             </tr>
             <tr>
@@ -56,83 +56,46 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>description for VLAN</div>
-                        <div>used as primary identifier in this module</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>onboarding_vlan_number</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                        <b>Default:</b><br/><div style="color: blue">"None"</div>
-                </td>
-                <td>
-                        <div>VLAN number (not ID) of VLAN to be used for onboarding network on this Switch</div>
-                        <div>not required for Switches with purpose &quot;core&quot;</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>port_numbering_offset</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                        <b>Default:</b><br/><div style="color: blue">0</div>
-                </td>
-                <td>
-                        <div>used to align the numbering of Ports in the frontend</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>purpose</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>core</b>&nbsp;&larr;</div></li>
-                                    <li>participants</li>
-                                    <li>mixed</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>defines the class of the Switch</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>pw</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                         <b>Default:</b><br/><div style="color: blue">""</div>
                 </td>
                 <td>
-                        <div>passwod used for login on Switch</div>
+                        <div>description for Table</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>number</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>number of Table</div>
+                        <div>used as primary identifier in this module</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>seat_ip_pool</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">"None"</div>
+                </td>
+                <td>
+                        <div>name (desc) of IpPool used for Seats on this Table</div>
                 </td>
             </tr>
             <tr>
@@ -167,7 +130,23 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>if Switch should be created or deleted</div>
+                        <div>if IpPool should be created or deleted</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>switch</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">"None"</div>
+                </td>
+                <td>
+                        <div>name (desc) of Switch providing Ports for this Table</div>
                 </td>
             </tr>
             <tr>
@@ -186,22 +165,6 @@ Parameters
                         <div>the full URL of API-Endpoint</div>
                 </td>
             </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>user</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <b>Default:</b><br/><div style="color: blue">"admin"</div>
-                </td>
-                <td>
-                        <div>username used for login on Switch</div>
-                </td>
-            </tr>
     </table>
     <br/>
 
@@ -213,44 +176,38 @@ Examples
 
 .. code-block:: yaml
 
-    # create Switch
-    - name: create switch
-      nils_ost.lpos.switch:
+    - name: create table
+      nils_ost.lpos.table:
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
-        desc: switch1
-        addr: 127.0.0.1
-        user: admin
-        pw: password
-        purpose: participants
-        onboarding_vlan_number: 10
+        number: 1
+        desc: Table 1
+        seat_ip_pool: table1-pool
+        add_ip_pool: addi-pool
+        switch: switch1
         state: present
       delegate_to: localhost
-      register: switch1
+      register: table1
 
-    # change the onboarding_vlan and numbering_offset of switch1
-    - name: update description
-      nils_ost.lpos.switch:
+    - name: edit table
+      nils_ost.lpos.table:
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
-        desc: switch1
-        addr: 127.0.0.1
-        user: admin
-        pw: password
-        purpose: participants
-        onboarding_vlan_number: 11
-        port_numbering_offset: 1
+        number: 1
+        desc: Table 1
+        seat_ip_pool: table1-pool
+        add_ip_pool: addi-pool
+        switch: switch2
         state: present
       delegate_to: localhost
-      register: switch1
+      register: table1
 
-    # delete the formaly created and updated switch1
-    - name: delete switch
-      nils_ost.lpos.switch:
+    - name: delete table
+      nils_ost.lpos.table:
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
-        desc: switch1
-        state: absend
+        number: 1
+        state: absent
       delegate_to: localhost
 
 
@@ -278,7 +235,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>always</td>
                 <td>
-                            <div>the item corresponding to description created, updated or found in LPOS. might be None in case of errors or deletion</div>
+                            <div>the item corresponding to number created, updated or found in LPOS. might be None in case of errors or deletion</div>
                     <br/>
                 </td>
             </tr>
