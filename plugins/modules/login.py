@@ -65,6 +65,7 @@ EXAMPLES = r"""
     host: "{{ ansible_host }}"
     user: "{{ root_login }}"
     password: "{{ root_password }}"
+  delegate_to: localhost
   register: lpos
 """
 

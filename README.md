@@ -25,8 +25,11 @@ As this collection is intended to do it's module call `delegate_to: localhost` i
 ### Modules
 Name | Description
 --- | ---
+[nils_ost.lpos.device](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.device_module.rst)|create or rename a Device
+[nils_ost.lpos.ippool](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.ippool_module.rst)|create, update or delete an IpPool
 [nils_ost.lpos.login](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.login_module.rst)|creates authenticated session, to be used by further modules
 [nils_ost.lpos.switch](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.switch_module.rst)|creates, updates or deletes Switches on an LPOS instance
+[nils_ost.lpos.table](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.table_module.rst)|create, update or delete a Table
 [nils_ost.lpos.vlan](https://github.com/nils-ost/ansible-collection-lpos/blob/main/docs/nils_ost.lpos.vlan_module.rst)|creates, updates or deletes VLANs on an LPOS instance
 
 <!--end collection content-->
