@@ -1,3 +1,5 @@
 venv/
+collections/
 .envrc
+*.pyc
 *.tar.gz

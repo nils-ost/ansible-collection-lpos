@@ -67,6 +67,9 @@ build_ignore:
   - changelogs/.plugin-cache.yaml
   - venv
   - dev
+  - collections
+  - ansible.cfg
+  - test
   - .envrc
   - .flake8
   - .pre-commit-config.yaml

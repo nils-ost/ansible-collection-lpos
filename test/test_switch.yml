@@ -1,0 +1,57 @@
+# test/test_switch.yml
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: login first
+      nils_ost.lpos.login:
+        host: "localhost"
+        port: 8000
+        path: "/"
+        user: "admin"
+        password: "password"
+      register: lpos
+
+    - name: create C1 switch
+      nils_ost.lpos.switch:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        addr: "127.0.0.1:1337"
+        purpose: 0
+        desc: "C1"
+      register: c1_result
+
+    - name: create M1 switch
+      nils_ost.lpos.switch:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        addr: "127.0.0.1:1338"
+        purpose: 2
+        onboarding_vlan_number: 21
+        desc: "M1"
+      register: m1_result
+
+    - name: create P1 switch
+      nils_ost.lpos.switch:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        addr: "127.0.0.1:1339"
+        purpose: 1
+        onboarding_vlan_number: 22
+        desc: "P1"
+      register: p1_result
+
+    - name: create P2 switch
+      nils_ost.lpos.switch:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        addr: "127.0.0.1:1340"
+        purpose: 1
+        onboarding_vlan_number: 23
+        desc: "P2"
+      register: p2_result

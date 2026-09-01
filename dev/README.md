@@ -26,7 +26,15 @@ Linting the written fragments
 antsibull-changelog lint
 ```
 
-## local testing
+## local testing (within collection)
+
+```
+ansible-galaxy collection build --force
+ansible-galaxy collection install --force nils_ost-lpos-1.0.0.tar.gz
+ansible-playbook test/test_vlan.yml test/test_switch.yml
+```
+
+## local testing (in another project)
 
   * build collection `rm *.tar.gz; ansible-galaxy collection build`
   * `cd` to your local testing project and "pull in" the collection (this ensures the correct environment for this project is used)

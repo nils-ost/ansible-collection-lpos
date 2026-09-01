@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright: (c) 2025, Nils Ost <home@nijos.de>
+# Copyright: (c) 2026, Nils Ost <home@nijos.de>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -119,7 +119,10 @@ def run_module():
             f"http://{module.params['host']}:{module.params['port']}",
             module.params["path"],
         )
-        response = s.get(result["url"] + f"/login/?user={module.params['user']}")
+        if not result["url"].endswith("/"):
+            result["url"] = result["url"] + "/"
+
+        response = s.get(result["url"] + f"login/?user={module.params['user']}")
 
         if response.status_code >= 400 or "session_id" not in response.json():
             module.fail_json(
@@ -136,7 +139,7 @@ def run_module():
             pw=m.hexdigest().lower(),
         )
         response = s.post(
-            result["url"] + f"/login/?user={module.params['user']}",
+            result["url"] + f"login/?user={module.params['user']}",
             json=data,
         )
         if response.status_code >= 400 or not response.json().get("complete", False):

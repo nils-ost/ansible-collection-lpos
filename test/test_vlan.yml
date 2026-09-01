@@ -1,0 +1,59 @@
+# test/test_switch.yml
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: login first
+      nils_ost.lpos.login:
+        host: "localhost"
+        port: 8000
+        path: "/"
+        user: "admin"
+        password: "password"
+      register: lpos
+
+    - name: create play VLAN
+      nils_ost.lpos.vlan:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        vlan_number: 12
+        purpose: 0
+        desc: "play network"
+
+    - name: create mgmt VLAN
+      nils_ost.lpos.vlan:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        vlan_number: 13
+        purpose: 1
+        desc: "mgmt network"
+
+    - name: create M1OB VLAN
+      nils_ost.lpos.vlan:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        vlan_number: 21
+        purpose: 2
+        desc: "Mixed1 Onboarding"
+
+    - name: create P1OB VLAN
+      nils_ost.lpos.vlan:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        vlan_number: 22
+        purpose: 2
+        desc: "Participants1 Onboarding"
+
+    - name: create P2OB VLAN
+      nils_ost.lpos.vlan:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: present
+        vlan_number: 23
+        purpose: 2
+        desc: "Participants2 Onboarding"
