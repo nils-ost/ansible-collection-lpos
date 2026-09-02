@@ -1,0 +1,35 @@
+# test/test_device.yml
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: login first
+      nils_ost.lpos.login:
+        host: "localhost"
+        port: 8000
+        path: "/"
+        user: "admin"
+        password: "password"
+      register: lpos
+
+    - name: create modem device
+      nils_ost.lpos.device:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        mac: aabbccddeeaa
+        desc: modem
+
+    - name: create server1 device
+      nils_ost.lpos.device:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        mac: aabbccddeebb
+        desc: server1
+
+    - name: create server2 device
+      nils_ost.lpos.device:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        mac: aabbccddeecc
+        desc: server2

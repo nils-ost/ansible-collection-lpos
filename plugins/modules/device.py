@@ -22,60 +22,96 @@ version_added: "1.0.0"
 short_description: create or rename a Device
 
 description:
-    - This module is intended to create or rename LPOS Devices
+    - This module manages LPOS Device elements via the LPOS REST API.
+    - A Device represents a network-connected device detected on a MikroTik switch port.
+    - Devices are identified by their MAC address (unique, stored without colons) in the LPOS backend.
+    - The module supports create and update operations.
+    - When creating or updating, the module searches for an existing device by its MAC address (I(mac)) via the LPOS API.
+      If found, it updates the existing record with the provided I(desc) with the provided I(desc); otherwise it creates a new one.
+    - The MAC address is sent to the LPOS backend as part of the create/update payload — the backend enforces uniqueness on this field.
 
 options:
+    state:
+        description:
+            - Whether the Device should exist (present) or be removed (absent).
+        required: false
+        type: str
+        choices: [ present, absent ]
+        default: present
     url:
         description:
-            - the full URL of API-Endpoint
+            - The full base URL of the LPOS API endpoint (e.g. C(http://192.168.0.5:81/api/)).
         required: true
         type: str
     session_id:
         description:
-            - the session-id used for authentication on API-Endpoint
+            - A valid session ID obtained from a previous login via the C(login) module.
         required: true
         type: str
     mac:
         description:
-            - MAC-Address of Device
-            - used as primary identifier in this module
-            - in hex without colons (e.g. 112233445566)
+            - MAC address of the device. Required when C(state=present) or when deleting with C(state=absent).
+            - Must be in hexadecimal format without colons (e.g., C(112233445566)).
+            - The LPOS backend enforces uniqueness on this field — no two devices can share the same MAC.
         required: true
         type: str
     desc:
         description:
-            - name (description) of Device
+            - Human-readable description (name) of the device. Used to set or rename the device on creation/update
+            - When a device is assigned to a seat in LPOS, this field may be auto-set from the Participant's name by the backend.
         required: false
         type: str
         default: ""
+
+notes:
+    - The module searches for existing devices by their C(mac) field.
+      If a device with that MAC already exists, it is updated with the provided I(desc); otherwise a new device is created.
+    - No two devices can have the same MAC address.
+    - The LPOS backend automatically calculates several fields when certain parameters are set
+
+seealso:
+    - module: nils_ost.lpos.login
+    - module: nils_ost.lpos.ippool
+    - module: nils_ost.lpos.table
+    - module: nils_ost.lpos.switch
 """
 
 EXAMPLES = r"""
-- name: create device
+- name: create a device with minimal parameters
   nils_ost.lpos.device:
     url: "{{ lpos.url }}"
     session_id: "{{ lpos.session_id }}"
-    mac: 112233445566
+    mac: aabbccddeeff
   delegate_to: localhost
-  register: device1
+  register: new_device
 
-- name: name device
+- name: create a device with description
   nils_ost.lpos.device:
     url: "{{ lpos.url }}"
     session_id: "{{ lpos.session_id }}"
-    mac: 112233445566
-    name: some device
+    mac: aabbccddeeff
+    desc: John's Laptop
   delegate_to: localhost
-  register: device1
+  register: new_device
 
-- name: rename device
+- name: update device description (finds existing by desc, updates mac)
   nils_ost.lpos.device:
     url: "{{ lpos.url }}"
     session_id: "{{ lpos.session_id }}"
-    mac: 112233445566
-    name: some important device
+    mac: aabbccddeeff
+    desc: Updated Device Name
   delegate_to: localhost
-  register: device1
+  register: updated_device
+
+- name: delete a device by description and MAC
+  nils_ost.lpos.device:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    mac: aabbccddeeff
+    desc: Device to Remove
+    state: absent
+  delegate_to: localhost
+  register: deleted_device
 """
 
 RETURN = r"""
@@ -102,21 +138,21 @@ def data_as_expected(d1, d2):
     return True
 
 
-def search(url, session, desc):
-    uri = f"{url}/device/"
+def search(url, session, mac):
+    uri = f"{url}device/"
 
     response = session.get(uri)
     if not response.status_code == 200:
         return (False, response.text)
 
     for item in response.json():
-        if desc == item.get("desc", ""):
+        if mac == item.get("mac", ""):
             return (True, item)
     return (True, None)
 
 
 def create(url, session, data):
-    uri = f"{url}/device/"
+    uri = f"{url}device/"
 
     response = session.post(uri, json=data)
     if not response.status_code == 201:
@@ -125,10 +161,10 @@ def create(url, session, data):
 
 
 def update(url, session, data):
-    uri = f"{url}/device/{data['id']}/"
+    uri = f"{url}device/{data['id']}/"
 
     response = session.patch(uri, json=data)
-    if not response.status_code == 200:
+    if not response.status_code == 201:
         return (False, response.text)
     return (True, response.json())
 
@@ -167,7 +203,7 @@ def run_module():
         session.headers["Content-Type"] = "application/json"
         session.cookies["LPOSsession"] = module.params["session_id"]
 
-        success, item = search(url, session, module.params["desc"])
+        success, item = search(url, session, module.params["mac"])
         if not success:
             module.fail_json(msg=f"error on searching for item: {item}", **result)
 
@@ -186,8 +222,8 @@ def run_module():
                         **result,
                     )
                 result["changed"] = True
-                result["item"] = item
-                module.exit_json(msg=f"created item: {item['id']}", **result)
+                result["item"] = item["created"]
+                module.exit_json(msg=f"created item: {item['created']}", **result)
             else:
                 result["changed"] = True
                 result["item"] = data
@@ -209,8 +245,8 @@ def run_module():
                         **result,
                     )
                 result["changed"] = True
-                result["item"] = item
-                module.exit_json(msg=f"updated item: {item['id']}", **result)
+                result["item"] = item["updated"]
+                module.exit_json(msg=f"updated item: {item['updated']}", **result)
             else:
                 result["changed"] = True
                 result["item"] = data

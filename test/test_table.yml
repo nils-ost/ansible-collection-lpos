@@ -1,0 +1,47 @@
+# test/test_table.yml
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: login first
+      nils_ost.lpos.login:
+        host: "localhost"
+        port: 8000
+        path: "/"
+        user: "admin"
+        password: "password"
+      register: lpos
+
+    - name: create T1 table
+      nils_ost.lpos.table:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        number: 1
+        desc: Table 1
+        seat_ip_pool: play-t1-pool
+        add_ip_pool: play-addi-pool
+        switch: M1
+        state: present
+
+    - name: create T2 table
+      nils_ost.lpos.table:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        number: 2
+        desc: Table 2
+        seat_ip_pool: play-t2-pool
+        add_ip_pool: play-addi-pool
+        switch: P1
+        state: present
+
+    - name: create T3 table
+      nils_ost.lpos.table:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        number: 3
+        desc: Table 3
+        seat_ip_pool: play-t3-pool
+        add_ip_pool: play-addi-pool
+        switch: P2
+        state: present

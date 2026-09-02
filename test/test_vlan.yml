@@ -1,4 +1,4 @@
-# test/test_switch.yml
+# test/test_vlan.yml
 - hosts: localhost
   connection: local
   gather_facts: no

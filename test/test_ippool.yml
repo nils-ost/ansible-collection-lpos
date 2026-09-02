@@ -1,0 +1,102 @@
+# test/test_ippool.yml
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: login first
+      nils_ost.lpos.login:
+        host: "localhost"
+        port: 8000
+        path: "/"
+        user: "admin"
+        password: "password"
+      register: lpos
+
+    - name: create mgmt IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: mgmt-pool
+        range_start: 10.13.66.1
+        range_end: 10.13.66.99
+        mask: 24
+        vlan_number: 13
+        state: present
+
+    - name: create play T1 IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: play-t1-pool
+        range_start: 192.168.123.10
+        range_end: 192.168.123.19
+        mask: 24
+        vlan_number: 12
+        state: present
+
+    - name: create play T2 IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: play-t2-pool
+        range_start: 192.168.123.20
+        range_end: 192.168.123.29
+        mask: 24
+        vlan_number: 12
+        state: present
+
+    - name: create play T3 IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: play-t3-pool
+        range_start: 192.168.123.30
+        range_end: 192.168.123.39
+        mask: 24
+        vlan_number: 12
+        state: present
+
+    - name: create play addi IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: play-addi-pool
+        range_start: 192.168.123.50
+        range_end: 192.168.123.99
+        mask: 24
+        vlan_number: 12
+        state: present
+
+    - name: create M1 OB IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: onboarding-m1-pool
+        range_start: 172.16.1.10
+        range_end: 172.16.1.100
+        mask: 24
+        vlan_number: 21
+        state: present
+
+    - name: create P1 OB IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: onboarding-p1-pool
+        range_start: 172.16.2.10
+        range_end: 172.16.2.100
+        mask: 24
+        vlan_number: 22
+        state: present
+
+    - name: create P2 OB IpPool
+      nils_ost.lpos.ippool:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        desc: onboarding-p2-pool
+        range_start: 172.16.3.10
+        range_end: 172.16.3.100
+        mask: 24
+        vlan_number: 23
+        state: present
