@@ -1,0 +1,94 @@
+# test/test_list.yml
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: login first
+      nils_ost.lpos.login:
+        host: "localhost"
+        port: 8000
+        path: "/"
+        user: "admin"
+        password: "password"
+      register: lpos
+
+    - name: list all VLANs
+      nils_ost.lpos.list:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        element: vlan
+      register: vlans
+
+    - name: verify VLAN list returned items
+      ansible.builtin.assert:
+        that:
+          - vlans is changed == false
+          - vlans.count >= 0
+          - vlans.items is defined
+        fail_msg: "VLAN listing should return a valid response"
+        success_msg: "VLAN listing succeeded with {{ vlans.count }} items"
+
+    - name: list all switches
+      nils_ost.lpos.list:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        element: switch
+      register: switches
+
+    - name: verify switch list returned
+      ansible.builtin.assert:
+        that:
+          - switches is changed == false
+          - switches.count >= 0
+          - switches.items is defined
+        fail_msg: "Switch listing should return a valid response"
+        success_msg: "Switch listing succeeded with {{ switches.count }} items"
+
+    - name: list all IP pools
+      nils_ost.lpos.list:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        element: ippool
+      register: ippools
+
+    - name: verify IPPool list returned
+      ansible.builtin.assert:
+        that:
+          - ippools is changed == false
+          - ippools.count >= 0
+          - ippools.items is defined
+        fail_msg: "IPPool listing should return a valid response"
+        success_msg: "IPPool listing succeeded with {{ ippools.count }} items"
+
+    - name: list all tables
+      nils_ost.lpos.list:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        element: table
+      register: tables
+
+    - name: verify table list returned
+      ansible.builtin.assert:
+        that:
+          - tables is changed == false
+          - tables.count >= 0
+          - tables.items is defined
+        fail_msg: "Table listing should return a valid response"
+        success_msg: "Table listing succeeded with {{ tables.count }} items"
+
+    - name: list all devices
+      nils_ost.lpos.list:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        element: device
+      register: devices
+
+    - name: verify device list returned
+      ansible.builtin.assert:
+        that:
+          - devices is changed == false
+          - devices.count >= 0
+          - devices.items is defined
+        fail_msg: "Device listing should return a valid response"
+        success_msg: "Device listing succeeded with {{ devices.count }} items"
