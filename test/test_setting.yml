@@ -1,0 +1,38 @@
+# test/test_setting.yml
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: login first
+      nils_ost.lpos.login:
+        host: "localhost"
+        port: 8000
+        path: "/"
+        user: "admin"
+        password: "password"
+      register: lpos
+
+    - name: update play IP
+      nils_ost.lpos.setting:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: update
+        key: play_ip
+        value: 3232267012 # 192.168.123.4
+
+    - name: update domain
+      nils_ost.lpos.setting:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: update
+        key: domain
+        value: "test.domain"
+
+    - name: update absolute_seatnumbers
+      nils_ost.lpos.setting:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        state: update
+        key: absolute_seatnumbers
+        value: true
