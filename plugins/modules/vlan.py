@@ -44,7 +44,7 @@ options:
             - A valid session ID obtained from a previous login via the C(login) module.
         required: true
         type: str
-    vlan_number:
+    number:
         description:
             - The VLAN ID (1-1024). Required when C(state=present) or when deleting a specific VLAN with C(state=absent).
             - Must be unique and not already in use by another VLAN.
@@ -69,7 +69,7 @@ options:
 
 notes:
     - Deleting a VLAN that has associated IpPools or Switch references will fail with an error from the API.
-    - When C(state=present) and C(vlan_number) matches an existing VLAN, the module updates it if any attributes differ.
+    - When C(state=present) and C(number) matches an existing VLAN, the module updates it if any attributes differ.
     - This module requires a valid session cookie passed via the C(session_id).
 
 requirements: [ "requests" ]
@@ -82,7 +82,7 @@ EXAMPLES = r"""
     url: "{{ lpos_url }}"
     session_id: "{{ lpos_session_id }}"
     state: present
-    vlan_number: 10
+    number: 10
     purpose: 0
     desc: "Play network"
 
@@ -92,7 +92,7 @@ EXAMPLES = r"""
     url: "{{ lpos_url }}"
     session_id: "{{ lpos_session_id }}"
     state: present
-    vlan_number: 20
+    number: 20
     purpose: 2
     desc: "Onboarding network for switch1"
 
@@ -102,7 +102,7 @@ EXAMPLES = r"""
     url: "{{ lpos_url }}"
     session_id: "{{ lpos_session_id }}"
     state: present
-    vlan_number: 10
+    number: 10
     desc: "Updated play network description"
 
 # Delete a VLAN
@@ -111,7 +111,7 @@ EXAMPLES = r"""
     url: "{{ lpos_url }}"
     session_id: "{{ lpos_session_id }}"
     state: absent
-    vlan_number: 20
+    number: 20
 """
 
 RETURN = r"""
@@ -130,14 +130,14 @@ vlan_id:
 """
 
 
-def get_vlan_by_number(session, url, vlan_number):
+def get_vlan_by_number(session, url, number):
     """Look up an existing VLAN by its number via GET /vlan/."""
     response = session.get(url + "vlan/")
     if response.status_code >= 400:
         return None
     vlans = response.json()
     for v in vlans:
-        if v.get("number") == vlan_number:
+        if v.get("number") == number:
             return v
     return None
 
@@ -153,7 +153,7 @@ def run_module():
         ),
         url=dict(type="str", required=True),
         session_id=dict(type="str", required=True),
-        vlan_number=dict(type="int", required=True),
+        number=dict(type="int", required=True),
         purpose=dict(type="int", required=False, default=3, choices=[0, 1, 2, 3]),
         desc=dict(type="str", required=False, default=""),
     )
@@ -179,34 +179,34 @@ def run_module():
 
         url = module.params["url"]
         state = module.params.get("state", "present")
-        vlan_number = module.params.get("vlan_number")
+        number = module.params.get("number")
         purpose = module.params.get("purpose", 3)
         desc = module.params.get("desc", "")
 
         if state == "present":
             # --- CREATE / UPDATE mode ---
-            existing = get_vlan_by_number(session, url, vlan_number)
+            existing = get_vlan_by_number(session, url, number)
 
             if existing is None:
                 # VLAN does not exist — create it
                 if module.check_mode:
                     result["changed"] = True
                     result["vlan"] = {
-                        "number": vlan_number,
+                        "number": number,
                         "purpose": purpose,
                         "desc": desc,
                     }
                     module.exit_json(**result)
 
                 data = dict(
-                    number=vlan_number,
+                    number=number,
                     purpose=purpose,
                     desc=desc,
                 )
                 response = session.post(url + "vlan/", json=data)
                 if response.status_code >= 400:
                     module.fail_json(
-                        msg=f"failed to create VLAN {vlan_number}: {response.text}",
+                        msg=f"failed to create VLAN {number}: {response.text}",
                         **result,
                     )
 
@@ -247,7 +247,7 @@ def run_module():
                 )
                 if response.status_code >= 400:
                     module.fail_json(
-                        msg=f"failed to update VLAN {vlan_number}: {response.text}",
+                        msg=f"failed to update VLAN {number}: {response.text}",
                         **result,
                     )
 
@@ -259,7 +259,7 @@ def run_module():
 
         elif state == "absent":
             # --- DELETE mode ---
-            existing = get_vlan_by_number(session, url, vlan_number)
+            existing = get_vlan_by_number(session, url, number)
 
             if existing is None:
                 # VLAN does not exist — nothing to do
@@ -273,7 +273,7 @@ def run_module():
             response = session.delete(url + "vlan/" + existing["id"])
             if response.status_code >= 400:
                 module.fail_json(
-                    msg=f"failed to delete VLAN {vlan_number}: {response.text}",
+                    msg=f"failed to delete VLAN {number}: {response.text}",
                     **result,
                 )
 

@@ -1,0 +1,116 @@
+# test/test_basic_config.yml
+- hosts: localhost
+  gather_facts: no
+
+  vars:
+    lpos_api_port: 8000
+    lpos_api_path: "/"
+
+    lpos_settings:
+      play_ip: 3232267012
+      domain: local.domain
+      absolute_seatnumbers: true
+
+    lpos_vlans:
+      12:
+        purpose: 0
+        desc: "play network"
+      13:
+        purpose: 1
+        desc: "mgmt network"
+      21:
+        purpose: 2
+        desc: "Mixed1 Onboarding"
+      22:
+        purpose: 2
+        desc: "Participants1 Onboarding"
+      23:
+        purpose: 2
+        desc: "Participants2 Onboarding"
+
+    lpos_switches:
+      127.0.0.1:1337:
+        purpose: 0
+        desc: "C1"
+      127.0.0.1:1338:
+        purpose: 2
+        onboarding_vlan_number: 21
+        desc: "M1"
+      127.0.0.1:1339:
+        purpose: 1
+        onboarding_vlan_number: 22
+        desc: "P1"
+      127.0.0.1:1340:
+        purpose: 1
+        onboarding_vlan_number: 23
+        desc: "P2"
+
+    lpos_ippools:
+      mgmt-pool:
+        range_start: 10.13.66.1
+        range_end: 10.13.66.99
+        mask: 24
+        vlan_number: 13
+      play-t1-pool:
+        range_start: 192.168.123.10
+        range_end: 192.168.123.19
+        mask: 24
+        vlan_number: 12
+      play-t2-pool:
+        range_start: 192.168.123.20
+        range_end: 192.168.123.29
+        mask: 24
+        vlan_number: 12
+      play-t3-pool:
+        range_start: 192.168.123.30
+        range_end: 192.168.123.39
+        mask: 24
+        vlan_number: 12
+      play-addi-pool:
+        range_start: 192.168.123.50
+        range_end: 192.168.123.99
+        mask: 24
+        vlan_number: 12
+      onboarding-m1-pool:
+        range_start: 172.16.1.10
+        range_end: 172.16.1.100
+        mask: 24
+        vlan_number: 21
+      onboarding-p1-pool:
+        range_start: 172.16.2.10
+        range_end: 172.16.2.100
+        mask: 24
+        vlan_number: 22
+      onboarding-p2-pool:
+        range_start: 172.16.3.10
+        range_end: 172.16.3.100
+        mask: 24
+        vlan_number: 23
+
+    lpos_tables:
+      1:
+        desc: Table 1
+        seat_ip_pool: play-t1-pool
+        add_ip_pool: play-addi-pool
+        switch: M1
+      2:
+        desc: Table 2
+        seat_ip_pool: play-t2-pool
+        add_ip_pool: play-addi-pool
+        switch: P1
+      3:
+        desc: Table 3
+        seat_ip_pool: play-t3-pool
+        add_ip_pool: play-addi-pool
+        switch: P2
+
+    lpos_devices:
+      aabbccddeeaa:
+        desc: modem
+      aabbccddeebb:
+        desc: server1
+      aabbccddeecc:
+        desc: server2
+
+  roles:
+    - nils_ost.lpos.basic_config

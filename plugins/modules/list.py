@@ -77,12 +77,12 @@ EXAMPLES = r"""
 - name: list all devices and print their MAC addresses
   ansible.builtin.debug:
     msg: "{{ item.mac }}"
-  loop: "{{ devices.items }}"
+  loop: "{{ devices.data }}"
   no_log: true
 """
 
 RETURN = r"""
-items:
+data:
     description:
         - A list of all element objects of the requested kind returned from the LPOS API.
         - Each item is a dictionary containing the element's attributes as returned by the backend.
@@ -125,7 +125,7 @@ def run_module():
     # seed the result dict in the object
     result = dict(
         changed=False,
-        items=[],
+        data=[],
         count=0,
     )
 
@@ -150,9 +150,9 @@ def run_module():
                 **result,
             )
 
-        items = response.json()
-        result["items"] = items
-        result["count"] = len(items)
+        data = response.json()
+        result["data"] = data
+        result["count"] = len(data)
         module.exit_json(**result)
 
     except requests.exceptions.ConnectionError as e:

@@ -1,0 +1,32 @@
+---
+- name: Pulling existing VLANs
+  nils_ost.lpos.list:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    element: vlan
+  delegate_to: localhost
+  register: existing_vlans
+
+- name: Pulling existing Switches
+  nils_ost.lpos.list:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    element: switch
+  delegate_to: localhost
+  register: existing_switches
+
+- name: Pulling existing IpPools
+  nils_ost.lpos.list:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    element: ippool
+  delegate_to: localhost
+  register: existing_ippools
+
+- name: Pulling existing Tables
+  nils_ost.lpos.list:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    element: table
+  delegate_to: localhost
+  register: existing_tables

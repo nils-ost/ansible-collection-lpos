@@ -1,0 +1,7 @@
+argument_specs:
+  main:
+    short_description: installs LPOS within docker
+    description: a role for configuring most of the basic settings needed to run an instance of LanPartyOnboardingSystem
+    author:
+      - Nils Ost (@nils-ost)
+    version_added: 1.0.0

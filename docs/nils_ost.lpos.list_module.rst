@@ -139,7 +139,7 @@ Examples
     - name: list all devices and print their MAC addresses
       ansible.builtin.debug:
         msg: "{{ item.mac }}"
-      loop: "{{ devices.items }}"
+      loop: "{{ devices.data }}"
       no_log: true
 
 
@@ -174,7 +174,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="return-"></div>
-                    <b>items</b>
+                    <b>data</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
                       <span style="color: purple">list</span>

@@ -31,7 +31,7 @@ antsibull-changelog lint
 ```
 ansible-galaxy collection build --force
 ansible-galaxy collection install --force nils_ost-lpos-1.0.0.tar.gz
-ansible-playbook test/test_vlan.yml test/test_switch.yml test/test_ippool.yml test/test_table.yml test/test_device.yml test/test_list.yml
+ansible-playbook test/test_basic_config.yml
 ```
 
 ## local testing (in another project)

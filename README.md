@@ -41,6 +41,7 @@ Name | Description
 Name | Description
 --- | ---
 [nils_ost.lpos.install_with_docker](https://github.com/nils-ost/ansible-collection-lpos/blob/main/roles/install_with_docker/README.md)|installs LPOS within docker
+[nils_ost.lpos.basic_cofig](https://github.com/nils-ost/ansible-collection-lpos/blob/main/roles/basic_config/README.md)|configures the most of basics to run LPOS
 
 ## Using this collection
 

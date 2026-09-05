@@ -18,7 +18,7 @@
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
         state: present
-        vlan_number: 12
+        number: 12
         purpose: 0
         desc: "play network"
 
@@ -27,7 +27,7 @@
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
         state: present
-        vlan_number: 13
+        number: 13
         purpose: 1
         desc: "mgmt network"
 
@@ -36,7 +36,7 @@
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
         state: present
-        vlan_number: 21
+        number: 21
         purpose: 2
         desc: "Mixed1 Onboarding"
 
@@ -45,7 +45,7 @@
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
         state: present
-        vlan_number: 22
+        number: 22
         purpose: 2
         desc: "Participants1 Onboarding"
 
@@ -54,6 +54,6 @@
         url: "{{ lpos.url }}"
         session_id: "{{ lpos.session_id }}"
         state: present
-        vlan_number: 23
+        number: 23
         purpose: 2
         desc: "Participants2 Onboarding"

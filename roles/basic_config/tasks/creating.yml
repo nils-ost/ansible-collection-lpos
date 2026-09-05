@@ -1,0 +1,81 @@
+---
+- name: Creating VLANs
+  nils_ost.lpos.vlan:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    number: "{{ vlan.key }}"
+    purpose: "{{ vlan.value.purpose | default(omit) }}"
+    desc: "{{ vlan.value.desc | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop_control:
+    loop_var: vlan
+    label: "{{ vlan.key }} ({{ vlan.value.desc | default('') }})"
+  with_dict: "{{ lpos_vlans }}"
+  register: created_vlans
+
+- name: Creating Switches
+  nils_ost.lpos.switch:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    addr: "{{ switch.key }}"
+    purpose: "{{ switch.value.purpose | default(omit) }}"
+    onboarding_vlan_number: "{{ switch.value.onboarding_vlan_number | default(omit) }}"
+    desc: "{{ switch.value.desc | default(omit) }}"
+    user: "{{ switch.value.user | default(omit) }}"
+    pw: "{{ switch.value.pw | default(omit) }}"
+    port_numbering_offset: "{{ switch.value.port_numbering_offset | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop_control:
+    loop_var: switch
+    label: "{{ switch.key }} ({{ switch.value.desc | default('') }})"
+  with_dict: "{{ lpos_switches }}"
+  register: created_switchs
+
+- name: Creating IpPools
+  nils_ost.lpos.ippool:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    desc: "{{ ippool.key }}"
+    range_start: "{{ ippool.value.range_start | default(omit) }}"
+    range_end: "{{ ippool.value.range_end | default(omit) }}"
+    mask: "{{ ippool.value.mask | default(omit) }}"
+    vlan_number: "{{ ippool.value.vlan_number | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop_control:
+    loop_var: ippool
+    label: "{{ ippool.key }}"
+  with_dict: "{{ lpos_ippools }}"
+  register: created_ippools
+
+- name: Creating Tables
+  nils_ost.lpos.table:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    number: "{{ table.key }}"
+    desc: "{{ table.value.desc | default(omit) }}"
+    switch: "{{ table.value.switch | default(omit) }}"
+    seat_ip_pool: "{{ table.value.seat_ip_pool | default(omit) }}"
+    add_ip_pool: "{{ table.value.add_ip_pool | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop_control:
+    loop_var: table
+    label: "{{ table.key }} ({{ table.value.desc | default('') }})"
+  with_dict: "{{ lpos_tables }}"
+  register: created_tables
+
+- name: Creating Devices
+  nils_ost.lpos.device:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    mac: "{{ device.key }}"
+    desc: "{{ device.value.desc | default(omit) }}"
+  delegate_to: localhost
+  loop_control:
+    loop_var: device
+    label: "{{ device.key }} ({{ device.value.desc | default('') }})"
+  with_dict: "{{ lpos_devices }}"
+  register: created_devices

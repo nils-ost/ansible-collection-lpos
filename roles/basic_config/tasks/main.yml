@@ -1,0 +1,33 @@
+---
+- name: API login
+  nils_ost.lpos.login:
+    host: "{{ ansible_host }}"
+    port: "{{ lpos_api_port }}"
+    path: "{{ lpos_api_path }}"
+    user: "admin"
+    password: "{{ lpos_admin_pw }}"
+  delegate_to: localhost
+  register: lpos
+
+- name: Update Settings
+  nils_ost.lpos.setting:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    state: update
+    key: "{{ setting.key }}"
+    value: "{{ setting.value }}"
+  delegate_to: localhost
+
+  loop_control:
+    loop_var: setting
+    label: "{{ setting.key }}"
+  with_dict: "{{ lpos_settings }}"
+
+- name: pulling Elements from API
+  include_tasks: pulling.yml
+
+- name: purging obsolete Elements
+  include_tasks: purging.yml
+
+- name: creating new Elements
+  include_tasks: creating.yml

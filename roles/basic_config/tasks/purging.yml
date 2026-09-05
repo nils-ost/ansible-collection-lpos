@@ -1,0 +1,52 @@
+---
+- name: Purging unconfigured Tables
+  nils_ost.lpos.table:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    number: "{{ existing_table.number }}"
+    state: "absent"
+  delegate_to: localhost
+  when: existing_table.number not in lpos_tables
+  loop_control:
+    loop_var: existing_table
+    label: "{{ existing_table.number }} ({{ existing_table.desc | default('') }})"
+  with_items: "{{ existing_tables.data }}"
+
+- name: Purging unconfigured IpPools
+  nils_ost.lpos.ippool:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    desc: "{{ existing_ippool.desc }}"
+    state: "absent"
+  delegate_to: localhost
+  when: existing_ippool.desc not in lpos_ippools
+  loop_control:
+    loop_var: existing_ippool
+    label: "{{ existing_ippool.desc }}"
+  with_items: "{{ existing_ippools.data }}"
+
+- name: Purging unconfigured Switches
+  nils_ost.lpos.switch:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    addr: "{{ existing_switch.addr }}"
+    state: "absent"
+  delegate_to: localhost
+  when: existing_switch.addr not in lpos_switches
+  loop_control:
+    loop_var: existing_switch
+    label: "{{ existing_switch.addr }} ({{ existing_switch.desc | default('') }})"
+  with_items: "{{ existing_switches.data }}"
+
+- name: Purging unconfigured VLANs
+  nils_ost.lpos.vlan:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    number: "{{ existing_vlan.number }}"
+    state: "absent"
+  delegate_to: localhost
+  when: existing_vlan.number not in lpos_vlans
+  loop_control:
+    loop_var: existing_vlan
+    label: "{{ existing_vlan.number }} ({{ existing_vlan.desc | default('') }})"
+  with_items: "{{ existing_vlans.data }}"

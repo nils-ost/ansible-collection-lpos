@@ -60,6 +60,23 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>number</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The VLAN ID (1-1024). Required when <code>state=present</code> or when deleting a specific VLAN with <code>state=absent</code>.</div>
+                        <div>Must be unique and not already in use by another VLAN.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>purpose</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -132,23 +149,6 @@ Parameters
                         <div>The full base URL of the LPOS API endpoint (e.g. <code>http://192.168.0.5:81/api/</code>).</div>
                 </td>
             </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vlan_number</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>The VLAN ID (1-1024). Required when <code>state=present</code> or when deleting a specific VLAN with <code>state=absent</code>.</div>
-                        <div>Must be unique and not already in use by another VLAN.</div>
-                </td>
-            </tr>
     </table>
     <br/>
 
@@ -158,7 +158,7 @@ Notes
 
 .. note::
    - Deleting a VLAN that has associated IpPools or Switch references will fail with an error from the API.
-   - When ``state=present`` and ``vlan_number`` matches an existing VLAN, the module updates it if any attributes differ.
+   - When ``state=present`` and ``number`` matches an existing VLAN, the module updates it if any attributes differ.
    - This module requires a valid session cookie passed via the ``session_id``.
 
 
@@ -174,7 +174,7 @@ Examples
         url: "{{ lpos_url }}"
         session_id: "{{ lpos_session_id }}"
         state: present
-        vlan_number: 10
+        number: 10
         purpose: 0
         desc: "Play network"
 
@@ -184,7 +184,7 @@ Examples
         url: "{{ lpos_url }}"
         session_id: "{{ lpos_session_id }}"
         state: present
-        vlan_number: 20
+        number: 20
         purpose: 2
         desc: "Onboarding network for switch1"
 
@@ -194,7 +194,7 @@ Examples
         url: "{{ lpos_url }}"
         session_id: "{{ lpos_session_id }}"
         state: present
-        vlan_number: 10
+        number: 10
         desc: "Updated play network description"
 
     # Delete a VLAN
@@ -203,7 +203,7 @@ Examples
         url: "{{ lpos_url }}"
         session_id: "{{ lpos_session_id }}"
         state: absent
-        vlan_number: 20
+        number: 20
 
 
 

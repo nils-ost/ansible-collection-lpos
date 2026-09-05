@@ -1,0 +1,18 @@
+---
+dependencies: []
+
+galaxy_info:
+  role_name: basic_config
+  author: Nils Ost (@nils-ost)
+  description: configures the most of basics to run LanPartyOnboardingSystem
+  license: GPL-3.0-or-later
+  min_ansible_version: 2.13.9
+  galaxy_tags:
+    - nlpt
+    - lpos
+    - configure
+    - dhcp
+    - dns
+    - network
+    - gateway
+    - vlan

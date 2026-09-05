@@ -64,6 +64,7 @@ issues: https://github.com/nils-ost/ansible-collection-lpos/issues
 # and '.git' are always filtered. Mutually exclusive with 'manifest'
 build_ignore:
   - .gitignore
+  - .github
   - changelogs/.plugin-cache.yaml
   - venv
   - dev
