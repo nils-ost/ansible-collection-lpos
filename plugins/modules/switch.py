@@ -76,13 +76,13 @@ options:
         default: ""
     user:
         description:
-            - SSH username for authenticating to the MikroTik switch.
+            - username for authenticating to the MikroTik switch.
         required: false
         type: str
-        default: ""
+        default: "admin"
     pw:
         description:
-            - SSH password for authenticating to the MikroTik switch.
+            - password for authenticating to the MikroTik switch.
         required: false
         type: str
         default: ""
@@ -203,7 +203,7 @@ def run_module():
         purpose=dict(type="int", required=False, default=0, choices=[0, 1, 2]),
         onboarding_vlan_number=dict(type="int", required=False),
         desc=dict(type="str", required=False, default=""),
-        user=dict(type="str", required=False, default=""),
+        user=dict(type="str", required=False, default="admin"),
         pw=dict(type="str", required=False, default="", no_log=True),
         port_numbering_offset=dict(type="int", required=False, default=0),
     )
@@ -237,7 +237,7 @@ def run_module():
         purpose = module.params.get("purpose", 0)
         onboarding_vlan_number = module.params.get("onboarding_vlan_number")
         desc = module.params.get("desc", "")
-        user = module.params.get("user", "")
+        user = module.params.get("user", "admin")
         pw = module.params.get("pw", "")
         port_numbering_offset = module.params.get("port_numbering_offset", 0)
 

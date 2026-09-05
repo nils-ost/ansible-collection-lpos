@@ -144,7 +144,7 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">""</div>
                 </td>
                 <td>
-                        <div>SSH password for authenticating to the MikroTik switch.</div>
+                        <div>password for authenticating to the MikroTik switch.</div>
                 </td>
             </tr>
             <tr>
@@ -208,10 +208,10 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">""</div>
+                        <b>Default:</b><br/><div style="color: blue">"admin"</div>
                 </td>
                 <td>
-                        <div>SSH username for authenticating to the MikroTik switch.</div>
+                        <div>username for authenticating to the MikroTik switch.</div>
                 </td>
             </tr>
     </table>
