@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "desc": {
+        "type": "string",
+        "description": "Description for Table"
+      },
+      "switch": {
+        "type": "string",
+        "description": "Description (not id) of the Switch that provides ports for this Table"
+      },
+      "seat_ip_pool": {
+        "type": "string",
+        "description": "Description (not id) of the IpPool used for seat devices on this Table"
+      },
+      "add_ip_pool": {
+        "type": "string",
+        "description": "Description (not id) of the IpPool used for additional (non-seat) devices on this Table"
+      }
+    },
+    "required": ["switch", "seat_ip_pool", "add_ip_pool"],
+    "additionalProperties": false
+  }
+}

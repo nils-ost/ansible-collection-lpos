@@ -16,8 +16,8 @@ PEP440 is the schema used to describe the versions of Ansible.
 
 ## External requirements
 
-Currently only the `requests` Python library is required by this collection, to be able to run the modules.
-As this collection is intended to do it's module call `delegate_to: localhost` it's enough to `pip install requests` locally.
+`requests` ans `jsonschema` Python librarys are required by this collection, to be able to run the modules and roles.
+As this collection is intended to do it's module call `delegate_to: localhost` it's enough to `pip install requests jsonschema` locally.
 
 ## Included content
 
@@ -41,7 +41,7 @@ Name | Description
 Name | Description
 --- | ---
 [nils_ost.lpos.install_with_docker](https://github.com/nils-ost/ansible-collection-lpos/blob/main/roles/install_with_docker/README.md)|installs LPOS within docker
-[nils_ost.lpos.basic_cofig](https://github.com/nils-ost/ansible-collection-lpos/blob/main/roles/basic_config/README.md)|configures most of the basics to run LPOS
+[nils_ost.lpos.basic_config](https://github.com/nils-ost/ansible-collection-lpos/blob/main/roles/basic_config/README.md)|configures most of the basics to run LPOS
 
 ## Using this collection
 

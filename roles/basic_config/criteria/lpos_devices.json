@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "desc": {
+        "type": "string",
+        "description": "Description for Device"
+      }
+    },
+    "additionalProperties": false
+  }
+}

@@ -5,3 +5,48 @@ argument_specs:
     author:
       - Nils Ost (@nils-ost)
     version_added: 1.0.0
+    options:
+      lpos_admin_pw:
+        type: str
+        default: "password"
+        description: Password to be set for the initial admin account.
+
+      lpos_api_port:
+        type: str
+        default: "80"
+        description: LPOS port used for API login.
+
+      lpos_api_path:
+        type: str
+        default: "/api/"
+        description: LPOS API path used for login.
+
+      lpos_settings:
+        type: dict
+        default: {}
+        description: Settings to be configured. (deeper validation is done with json criteriy within the role main)
+
+      lpos_vlans:
+        type: dict
+        default: {}
+        description: VLANs to be configured. (deeper validation is done with json criteriy within the role main)
+
+      lpos_switches:
+        type: dict
+        default: {}
+        description: Switches to be configured. (deeper validation is done with json criteriy within the role main)
+
+      lpos_ippools:
+        type: dict
+        default: {}
+        description: IpPools to be configured. (deeper validation is done with json criteriy within the role main)
+
+      lpos_tables:
+        type: dict
+        default: {}
+        description: Tables to be configured. (deeper validation is done with json criteriy within the role main)
+
+      lpos_devices:
+        type: dict
+        default: {}
+        description: Devices to be configured. (deeper validation is done with json criteriy within the role main)

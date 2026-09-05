@@ -1,4 +1,39 @@
 ---
+- name: Validate VLANs config
+  ansible.utils.validate:
+    data: "{{ lpos_vlans }}"
+    criteria:
+      - "{{ lookup('file',  '../criteria/lpos_vlans.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+
+- name: Validate Switches config
+  ansible.utils.validate:
+    data: "{{ lpos_switches }}"
+    criteria:
+      - "{{ lookup('file',  '../criteria/lpos_switches.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+
+- name: Validate IpPools config
+  ansible.utils.validate:
+    data: "{{ lpos_ippools }}"
+    criteria:
+      - "{{ lookup('file',  '../criteria/lpos_ippools.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+
+- name: Validate Tables config
+  ansible.utils.validate:
+    data: "{{ lpos_tables }}"
+    criteria:
+      - "{{ lookup('file',  '../criteria/lpos_tables.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+
+- name: Validate Devices config
+  ansible.utils.validate:
+    data: "{{ lpos_devices }}"
+    criteria:
+      - "{{ lookup('file',  '../criteria/lpos_devices.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+
 - name: API login
   nils_ost.lpos.login:
     host: "{{ ansible_host }}"

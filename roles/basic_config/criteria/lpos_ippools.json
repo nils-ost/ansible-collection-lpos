@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "range_start": {
+        "type": "string",
+        "format": "ipv4",
+        "description": "First IP address of the pool range"
+      },
+      "range_end": {
+        "type": "string",
+        "format": "ipv4",
+        "description": "Last IP address of the pool range"
+      },
+      "mask": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 32,
+        "description": "CIDR prefix length (subnet mask) for the IP pool"
+      },
+      "vlan_number": {
+        "type": "integer",
+        "description": "The VLAN number (not id) of the VLAN this IpPool belongs to"
+      }
+    },
+    "required": ["range_start", "range_end", "vlan_number"],
+    "additionalProperties": false
+  }
+}
