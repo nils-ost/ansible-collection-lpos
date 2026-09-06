@@ -1,6 +1,6 @@
 # Ansible Collection - nils_ost.lpos
 
-This repository contains the `nils_ost.lpos` Ansible Collection. For install and configure a instance of [LanPartyOnboardingSystem](https://github.com/nils-ost/LanPartyOnboardingSystem)
+This repository contains the `nils_ost.lpos` Ansible Collection. For installing and configuring an instance of [LanPartyOnboardingSystem](https://github.com/nils-ost/LanPartyOnboardingSystem)
 
 <!--start requires_ansible-->
 ## Ansible version compatibility
@@ -16,7 +16,7 @@ PEP440 is the schema used to describe the versions of Ansible.
 
 ## External requirements
 
-`requests` ans `jsonschema` Python librarys are required by this collection, to be able to run the modules and roles.
+`requests` and `jsonschema` Python libraries are required by this collection, to be able to run the modules and roles.
 As this collection is intended to do it's module call `delegate_to: localhost` it's enough to `pip install requests jsonschema` locally.
 
 ## Included content

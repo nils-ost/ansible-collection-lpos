@@ -1,0 +1,67 @@
+objects:
+  role:
+    basic_config:
+      description: installs LPOS within docker
+      name: basic_config
+      version_added: 1.0.0
+    install_with_docker:
+      description: installs LPOS within docker
+      name: install_with_docker
+      version_added: 1.0.0
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  filter: {}
+  httpapi: {}
+  inventory: {}
+  lookup: {}
+  module:
+    device:
+      description: create or rename a Device
+      name: device
+      namespace: ""
+      version_added: 1.0.0
+    ippool:
+      description: create, update or delete an IpPool
+      name: ippool
+      namespace: ""
+      version_added: 1.0.0
+    list:
+      description: returns a list of all LPOS elements of a given kind
+      name: list
+      namespace: ""
+      version_added: 1.0.0
+    login:
+      description: creates authenticated session, to be used by further modules
+      name: login
+      namespace: ""
+      version_added: 1.0.0
+    setting:
+      description: get or update LPOS system settings
+      name: setting
+      namespace: ""
+      version_added: 1.0.0
+    switch:
+      description: creates, updates or deletes Switches on an LPOS instance
+      name: switch
+      namespace: ""
+      version_added: 1.0.0
+    table:
+      description: create, update or delete a Table
+      name: table
+      namespace: ""
+      version_added: 1.0.0
+    vlan:
+      description: creates, updates or deletes VLANs on an LPOS instance
+      name: vlan
+      namespace: ""
+      version_added: 1.0.0
+  netconf: {}
+  shell: {}
+  strategy: {}
+  test: {}
+  vars: {}
+version: 1.0.0

@@ -1,0 +1,43 @@
+ancestor: null
+releases:
+  1.0.0:
+    changes:
+      release_summary:
+        Initial release of nils_ost.lpos collection with 8 modules
+        and 2 roles
+    fragments:
+      - v1.0.0.yml
+    modules:
+      - description: create or rename a Device.
+        name: device
+        namespace: ""
+      - description: create, update or delete an IpPool.
+        name: ippool
+        namespace: ""
+      - description: returns a list of all LPOS elements of a given kind.
+        name: list
+        namespace: ""
+      - description: creates authenticated session, to be used by further modules.
+        name: login
+        namespace: ""
+      - description: get or update LPOS system settings.
+        name: setting
+        namespace: ""
+      - description: creates, updates or deletes Switches on an LPOS instance.
+        name: switch
+        namespace: ""
+      - description: create, update or delete a Table.
+        name: table
+        namespace: ""
+      - description: creates, updates or deletes VLANs on an LPOS instance.
+        name: vlan
+        namespace: ""
+    objects:
+      role:
+        - description: installs LPOS within docker.
+          name: basic_config
+          namespace: null
+        - description: installs LPOS within docker.
+          name: install_with_docker
+          namespace: null
+    release_date: "2026-09-06"
