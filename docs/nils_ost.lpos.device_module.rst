@@ -34,12 +34,149 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="1">Parameter</th>
+            <th colspan="2">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>commit_config</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 1.1.0</div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">null</div>
+                </td>
+                <td>
+                        <div>Configuration dict for committing device-specific settings. If omitted or set to <code>null</code>, no special configuration is applied.</div>
+                        <div>When provided, it must be a dictionary with the following optional keys (defaults are applied by the backend if not specified)</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>default</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The default VLAN number (not MongoDB _id). Defaults to the first VLAN in <em>vlans</em> if not specified.</div>
+                        <div>The module resolves this VLAN number to its MongoDB _id via the LPOS VLAN API before sending to the backend.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>enabled</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Whether commit config is enabled for this device.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>force</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Force the configuration commit even if conditions are not met.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>disabled</li>
+                                    <li><div style="color: blue"><b>optional</b>&nbsp;&larr;</div></li>
+                                    <li>enabled</li>
+                                    <li>strict</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>The mode of operation for the config commit.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>receive</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>any</b>&nbsp;&larr;</div></li>
+                                    <li>only tagged</li>
+                                    <li>only untagged</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Which traffic to receive on this device.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlans</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of VLAN numbers (not MongoDB _id) to include in the commit config. At least one is required when this key is present.</div>
+                        <div>The module resolves these VLAN numbers to their MongoDB _id via the LPOS VLAN API before sending to the backend.</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>desc</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -56,7 +193,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mac</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -74,7 +211,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>session_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -90,7 +227,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -109,7 +246,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>url</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -135,6 +272,7 @@ Notes
    - The module searches for existing devices by their ``mac`` field. If a device with that MAC already exists, it is updated with the provided *desc*; otherwise a new device is created.
    - No two devices can have the same MAC address.
    - The LPOS backend automatically calculates several fields when certain parameters are set
+   - When ``commit_config`` contains *vlans* or *default*, these VLAN numbers are resolved to their MongoDB _id via the LPOS VLAN API the referenced VLANs must already exist before this module runs.
 
 
 See Also
@@ -182,6 +320,24 @@ Examples
         desc: Updated Device Name
       delegate_to: localhost
       register: updated_device
+
+    - name: create a device with commit_config
+      nils_ost.lpos.device:
+        url: "{{ lpos.url }}"
+        session_id: "{{ lpos.session_id }}"
+        mac: aabbccddeeff
+        desc: Gaming PC
+        commit_config:
+          enabled: true
+          force: false
+          mode: strict
+          receive: any
+          vlans:
+            - 10
+            - 20
+          default: 10
+      delegate_to: localhost
+      register: new_device
 
     - name: delete a device by description and MAC
       nils_ost.lpos.device:

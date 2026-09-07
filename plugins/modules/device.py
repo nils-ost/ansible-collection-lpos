@@ -62,12 +62,62 @@ options:
         required: false
         type: str
         default: ""
+    commit_config:
+        description:
+            - Configuration dict for committing device-specific settings. If omitted or set to C(null), no special configuration is applied.
+            - When provided, it must be a dictionary with the following optional keys (defaults are applied by the backend if not specified)
+        version_added: "1.1.0"
+        required: false
+        type: dict
+        default: null
+        suboptions:
+            enabled:
+                description:
+                    - Whether commit config is enabled for this device.
+                required: false
+                type: bool
+                default: true
+            force:
+                description:
+                    - Force the configuration commit even if conditions are not met.
+                required: false
+                type: bool
+                default: false
+            mode:
+                description:
+                    - The mode of operation for the config commit.
+                required: false
+                type: str
+                choices: [ disabled, optional, enabled, strict ]
+                default: optional
+            receive:
+                description:
+                    - Which traffic to receive on this device.
+                required: false
+                type: str
+                choices: [ any, only tagged, only untagged ]
+                default: any
+            vlans:
+                description:
+                    - List of VLAN numbers (not MongoDB _id) to include in the commit config. At least one is required when this key is present.
+                    - The module resolves these VLAN numbers to their MongoDB _id via the LPOS VLAN API before sending to the backend.
+                required: false
+                type: list
+                elements: int
+            default:
+                description:
+                    - The default VLAN number (not MongoDB _id). Defaults to the first VLAN in I(vlans) if not specified.
+                    - The module resolves this VLAN number to its MongoDB _id via the LPOS VLAN API before sending to the backend.
+                required: false
+                type: int
 
 notes:
     - The module searches for existing devices by their C(mac) field.
       If a device with that MAC already exists, it is updated with the provided I(desc); otherwise a new device is created.
     - No two devices can have the same MAC address.
     - The LPOS backend automatically calculates several fields when certain parameters are set
+    - When C(commit_config) contains I(vlans) or I(default), these VLAN numbers are resolved to their MongoDB _id via the LPOS VLAN API
+      the referenced VLANs must already exist before this module runs.
 
 seealso:
     - module: nils_ost.lpos.login
@@ -103,6 +153,24 @@ EXAMPLES = r"""
   delegate_to: localhost
   register: updated_device
 
+- name: create a device with commit_config
+  nils_ost.lpos.device:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    mac: aabbccddeeff
+    desc: Gaming PC
+    commit_config:
+      enabled: true
+      force: false
+      mode: strict
+      receive: any
+      vlans:
+        - 10
+        - 20
+      default: 10
+  delegate_to: localhost
+  register: new_device
+
 - name: delete a device by description and MAC
   nils_ost.lpos.device:
     url: "{{ lpos.url }}"
@@ -127,6 +195,7 @@ def data_as_expected(d1, d2):
     keys = [
         "mac",
         "desc",
+        "commit_config",
     ]
     for k in keys:
         if k not in d1:
@@ -169,6 +238,41 @@ def update(url, session, data):
     return (True, response.json())
 
 
+def resolve_vlan_numbers(url, session, vlan_numbers):
+    """Resolve a list of VLAN numbers to their MongoDB _id values."""
+    uri = f"{url}vlan/"
+    response = session.get(uri)
+    if not response.status_code == 200:
+        return (False, response.text)
+
+    vlan_map = {}
+    for item in response.json():
+        num = item.get("number")
+        vid = item.get("id")
+        if num is not None and vid is not None:
+            vlan_map[num] = vid
+
+    resolved = []
+    for num in vlan_numbers:
+        if num not in vlan_map:
+            return (False, f"VLAN with number '{num}' not found")
+        resolved.append(vlan_map[num])
+    return (True, resolved)
+
+
+def resolve_vlan_number(url, session, vlan_number):
+    """Resolve a single VLAN number to its MongoDB _id value."""
+    uri = f"{url}vlan/"
+    response = session.get(uri)
+    if not response.status_code == 200:
+        return (False, response.text)
+
+    for item in response.json():
+        if vlan_number == item.get("number", 0):
+            return (True, item["id"])
+    return (False, f"VLAN with number '{vlan_number}' not found")
+
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
@@ -176,6 +280,7 @@ def run_module():
         session_id=dict(type="str", required=True, no_log=True),
         mac=dict(type="str", required=True),
         desc=dict(type="str", required=False, default=""),
+        commit_config=dict(type="dict", required=False, default=None),
     )
 
     # seed the result dict in the object
@@ -207,10 +312,57 @@ def run_module():
         if not success:
             module.fail_json(msg=f"error on searching for item: {item}", **result)
 
+        # Resolve VLAN numbers in commit_config to MongoDB _ids
+        commit_config = module.params["commit_config"]
+        if commit_config is not None and (
+            "vlans" in commit_config or "default" in commit_config
+        ):
+            vlans_list = commit_config.get("vlans", [])
+            default_vlan = commit_config.get("default")
+
+            # Resolve all VLAN numbers first (bulk)
+            resolved_vlans = []
+            if vlans_list:
+                success, result_val = resolve_vlan_numbers(url, session, vlans_list)
+                if not success:
+                    module.fail_json(
+                        msg=f"error resolving VLANs: {result_val}",
+                        **result,
+                    )
+                resolved_vlans = result_val
+
+            # Resolve default VLAN number if provided separately
+            resolved_default = None
+            if default_vlan is not None:
+                success, result_val = resolve_vlan_number(url, session, default_vlan)
+                if not success:
+                    module.fail_json(
+                        msg=f"error resolving default VLAN: {result_val}",
+                        **result,
+                    )
+                resolved_default = result_val
+
+            # Build the resolved commit_config dict
+            resolved_commit_config = {}
+            for key in ["enabled", "force", "mode", "receive"]:
+                if key in commit_config:
+                    resolved_commit_config[key] = commit_config[key]
+            if vlans_list:
+                resolved_commit_config["vlans"] = resolved_vlans
+            elif default_vlan is not None:
+                # If only default is provided but no vlans, we need at least one vlan
+                # Use the resolved default as the only vlan
+                resolved_commit_config["vlans"] = [resolved_default]
+            if resolved_default is not None:
+                resolved_commit_config["default"] = resolved_default
+
+            commit_config = resolved_commit_config
+
         data = dict(
             id=None,
             mac=module.params["mac"],
             desc=module.params["desc"],
+            commit_config=commit_config,
         )
 
         if item is None:

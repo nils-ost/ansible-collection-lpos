@@ -26,6 +26,15 @@
         session_id: "{{ lpos.session_id }}"
         mac: aabbccddeebb
         desc: server1
+        commit_config:
+          enabled: true
+          force: false
+          mode: enabled
+          receive: only tagged
+          vlans:
+            - 12
+            - 13
+          default: 13
 
     - name: create server2 device
       nils_ost.lpos.device:
@@ -33,3 +42,4 @@
         session_id: "{{ lpos.session_id }}"
         mac: aabbccddeecc
         desc: server2
+        commit_config: null
