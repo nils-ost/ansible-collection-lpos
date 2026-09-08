@@ -73,6 +73,8 @@
     session_id: "{{ lpos.session_id }}"
     mac: "{{ device.key }}"
     desc: "{{ device.value.desc | default(omit) }}"
+    commit_config: "{{ device.value.commit_config | default(omit) if device.value.commit_config is not none else omit }}"
+    retreat_config: "{{ device.value.retreat_config | default(omit) if device.value.retreat_config is not none else omit }}"
   delegate_to: localhost
   loop_control:
     loop_var: device

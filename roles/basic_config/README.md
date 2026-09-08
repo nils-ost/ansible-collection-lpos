@@ -12,6 +12,7 @@ Version added: 1.0.0
   - [Structure of: lpos\_ippools](#structure-of-lpos_ippools)
   - [Structure of: lpos\_tables](#structure-of-lpos_tables)
   - [Structure of: lpos\_devices](#structure-of-lpos_devices)
+    - [Substructure of: commit\_config and retreat\_config](#substructure-of-commit_config-and-retreat_config)
 - [Full Example](#full-example)
 
 ## Synopsis
@@ -110,9 +111,27 @@ The second-level (or value of the top-level dict) sets some variables for this D
 
 The possible variables on second-level are:
 
-| Variable     | Type | Required | Default | Comment                |
-| ------------ | ---- | -------- | ------- | ---------------------- |
-| desc         | str  | false    | ""      | description for Device |
+| Variable       | Type | Required | Default | Comment                                                                                 |
+| -------------- | ---- | -------- | ------- | --------------------------------------------------------------------------------------- |
+| desc           | str  | false    | ""      | description for Device                                                                  |
+| commit_config  | dict | false    | null    | Configuration dict for committing device-specific settings (see below for substructure) |
+| retreat_config | dict | false    | null    | Configuration dict for retreating device-specific settings (see below for substructure) |
+
+#### Substructure of: commit_config and retreat_config
+
+With these settings it's possible to overwrite the Ports commit- and/or retreat_config based on the Device that is connected.  
+If the settings are set to `null` or are omitted the Device does not influence the Port configuration based on Device.
+
+Otherwise a dictionary with the following possible variable is required:
+
+| Variable | Type | Required | Default  | Comment                                                                                                                |
+| -------- | ---- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| enabled  | bool | false    | true     | Whether the corresponding Port is enabled or shut down                                                                 |
+| force    | bool | false    | false    | Assigns the Default VLAN to all ingress traffic                                                                        |
+| mode     | str  | false    | optional | VLAN filtering mode (mostly for egress traffic except in strict mode), one of: [ disabled, optional, enabled, strict ] |
+| receive  | str  | false    | any      | Received traffic filtering based on VLAN tag presence, one of: [ any, only tagged, only untagged ]                     |
+| vlans    | list | false    | []       | List of VLAN numbers to be available on Port                                                                           |
+| default  | int  | true     |          | The default VLAN number                                                                                                |
 
 ## Full Example
 
@@ -180,6 +199,16 @@ lpos_devices:
     desc: modem
   aabbccddeebb:
     desc: server1
+    commit_config:
+      mode: strict
+      receive: only tagged
+      vlans:
+        - 12
+        - 13
+      default: 13
   aabbccddeecc:
     desc: server2
+    commit_config: null
+    retreat_config:
+      default: 12
 ```

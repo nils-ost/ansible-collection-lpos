@@ -6,8 +6,52 @@
       "desc": {
         "type": "string",
         "description": "Description for Device"
+      },
+      "commit_config": {
+        "oneOf": [{ "$ref": "#/definitions/portConfig" }, { "type": "null" }]
+      },
+      "retreat_config": {
+        "oneOf": [{ "$ref": "#/definitions/portConfig" }, { "type": "null" }]
       }
     },
     "additionalProperties": false
+  },
+  "definitions": {
+    "portConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the corresponding Port is enabled or shut down"
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Assigns the Default VLAN to all ingress traffic"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["disabled", "optional", "enabled", "strict"],
+          "description": "VLAN filtering mode (mostly for egress traffic except in strict mode)"
+        },
+        "receive": {
+          "type": "string",
+          "enum": ["any", "only tagged", "only untagged"],
+          "description": "Received traffic filtering based on VLAN tag presence"
+        },
+        "vlans": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "List of VLAN numbers to be available on Port"
+        },
+        "default": {
+          "type": "integer",
+          "description": "The default VLAN number"
+        }
+      },
+      "required": ["default"],
+      "additionalProperties": false
+    }
   }
 }

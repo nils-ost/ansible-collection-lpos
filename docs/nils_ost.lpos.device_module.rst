@@ -90,7 +90,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Whether commit config is enabled for this device.</div>
+                        <div>Whether the corresponding Port is enabled or shut down.</div>
                 </td>
             </tr>
             <tr>
@@ -110,7 +110,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Force the configuration commit even if conditions are not met.</div>
+                        <div>Assigns the Default VLAN to all ingress traffic.</div>
                 </td>
             </tr>
             <tr>
@@ -132,7 +132,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>The mode of operation for the config commit.</div>
+                        <div>VLAN filtering mode (mostly for egress traffic except in strict mode).</div>
                 </td>
             </tr>
             <tr>
@@ -153,7 +153,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Which traffic to receive on this device.</div>
+                        <div>Received traffic filtering based on VLAN tag presence.</div>
                 </td>
             </tr>
             <tr>
@@ -170,7 +170,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of VLAN numbers (not MongoDB _id) to include in the commit config. At least one is required when this key is present.</div>
+                        <div>List of VLAN numbers (not MongoDB _id) to be available on Port. At least one is required when this key is present.</div>
                         <div>The module resolves these VLAN numbers to their MongoDB _id via the LPOS VLAN API before sending to the backend.</div>
                 </td>
             </tr>
@@ -262,7 +262,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Whether retreat config is enabled for this device.</div>
+                        <div>Whether the corresponding Port is enabled or shut down.</div>
                 </td>
             </tr>
             <tr>
@@ -282,7 +282,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Force the configuration retreat even if conditions are not met.</div>
+                        <div>Assigns the Default VLAN to all ingress traffic.</div>
                 </td>
             </tr>
             <tr>
@@ -304,7 +304,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>The mode of operation for the config retreat.</div>
+                        <div>VLAN filtering mode (mostly for egress traffic except in strict mode).</div>
                 </td>
             </tr>
             <tr>
@@ -325,7 +325,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Which traffic to receive on this device during retreat.</div>
+                        <div>Received traffic filtering based on VLAN tag presence.</div>
                 </td>
             </tr>
             <tr>
@@ -342,7 +342,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of VLAN numbers (not MongoDB _id) to include in the retreat config. At least one is required when this key is present.</div>
+                        <div>List of VLAN numbers (not MongoDB _id) to be available on Port. At least one is required when this key is present.</div>
                         <div>The module resolves these VLAN numbers to their MongoDB _id via the LPOS VLAN API before sending to the backend.</div>
                 </td>
             </tr>

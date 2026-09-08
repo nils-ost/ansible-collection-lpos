@@ -109,8 +109,18 @@
         desc: modem
       aabbccddeebb:
         desc: server1
+        commit_config:
+          mode: strict
+          receive: only tagged
+          vlans:
+            - 12
+            - 13
+          default: 13
       aabbccddeecc:
         desc: server2
+        commit_config: null
+        retreat_config:
+          default: 12
 
   roles:
     - nils_ost.lpos.basic_config
