@@ -35,6 +35,7 @@
             - 12
             - 13
           default: 13
+        retreat_config: null
 
     - name: create server2 device
       nils_ost.lpos.device:
@@ -43,3 +44,11 @@
         mac: aabbccddeecc
         desc: server2
         commit_config: null
+        retreat_config:
+          enabled: true
+          force: false
+          mode: optional
+          receive: only untagged
+          vlans:
+            - 21
+          default: 21

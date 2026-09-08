@@ -110,13 +110,62 @@ options:
                     - The module resolves this VLAN number to its MongoDB _id via the LPOS VLAN API before sending to the backend.
                 required: false
                 type: int
+    retreat_config:
+        description:
+            - Configuration dict for retreating device-specific settings. If omitted or set to C(null), no special configuration is applied.
+            - When provided, it must be a dictionary with the following optional keys (defaults are applied by the backend if not specified)
+        version_added: "1.1.0"
+        required: false
+        type: dict
+        default: null
+        suboptions:
+            enabled:
+                description:
+                    - Whether retreat config is enabled for this device.
+                required: false
+                type: bool
+                default: true
+            force:
+                description:
+                    - Force the configuration retreat even if conditions are not met.
+                required: false
+                type: bool
+                default: false
+            mode:
+                description:
+                    - The mode of operation for the config retreat.
+                required: false
+                type: str
+                choices: [ disabled, optional, enabled, strict ]
+                default: optional
+            receive:
+                description:
+                    - Which traffic to receive on this device during retreat.
+                required: false
+                type: str
+                choices: [ any, only tagged, only untagged ]
+                default: "any"
+            vlans:
+                description:
+                    - List of VLAN numbers (not MongoDB _id) to include in the retreat config. At least one is required when this key is present.
+                    - The module resolves these VLAN numbers to their MongoDB _id via the LPOS VLAN API before sending to the backend.
+                required: false
+                type: list
+                elements: int
+            default:
+                description:
+                    - The default VLAN number (not MongoDB _id). Defaults to the first VLAN in I(vlans) if not specified.
+                    - The module resolves this VLAN number to its MongoDB _id via the LPOS VLAN API before sending to the backend.
+                required: false
+                type: int
 
 notes:
     - The module searches for existing devices by their C(mac) field.
       If a device with that MAC already exists, it is updated with the provided I(desc); otherwise a new device is created.
     - No two devices can have the same MAC address.
     - The LPOS backend automatically calculates several fields when certain parameters are set
-    - When C(commit_config) contains I(vlans) or I(default), these VLAN numbers are resolved to their MongoDB _id via the LPOS VLAN API
+    - When C(commit_config) or C(retreat_config) contains I(vlans) or I(default),
+      these VLAN numbers are resolved to their MongoDB _id via the LPOS VLAN API
       the referenced VLANs must already exist before this module runs.
 
 seealso:
@@ -171,6 +220,23 @@ EXAMPLES = r"""
   delegate_to: localhost
   register: new_device
 
+- name: create a device with retreat_config
+  nils_ost.lpos.device:
+    url: "{{ lpos.url }}"
+    session_id: "{{ lpos.session_id }}"
+    mac: aabbccddeeff
+    desc: Gaming PC
+    retreat_config:
+      enabled: true
+      force: false
+      mode: strict
+      receive: any
+      vlans:
+        - 10
+      default: 10
+  delegate_to: localhost
+  register: new_device
+
 - name: delete a device by description and MAC
   nils_ost.lpos.device:
     url: "{{ lpos.url }}"
@@ -196,6 +262,7 @@ def data_as_expected(d1, d2):
         "mac",
         "desc",
         "commit_config",
+        "retreat_config",
     ]
     for k in keys:
         if k not in d1:
@@ -281,6 +348,7 @@ def run_module():
         mac=dict(type="str", required=True),
         desc=dict(type="str", required=False, default=""),
         commit_config=dict(type="dict", required=False, default=None),
+        retreat_config=dict(type="dict", required=False, default=None),
     )
 
     # seed the result dict in the object
@@ -358,11 +426,58 @@ def run_module():
 
             commit_config = resolved_commit_config
 
+        # Resolve VLAN numbers in retreat_config to MongoDB _ids
+        retreat_config = module.params["retreat_config"]
+        if retreat_config is not None and (
+            "vlans" in retreat_config or "default" in retreat_config
+        ):
+            vlans_list = retreat_config.get("vlans", [])
+            default_vlan = retreat_config.get("default")
+
+            # Resolve all VLAN numbers first (bulk)
+            resolved_vlans = []
+            if vlans_list:
+                success, result_val = resolve_vlan_numbers(url, session, vlans_list)
+                if not success:
+                    module.fail_json(
+                        msg=f"error resolving VLANs: {result_val}",
+                        **result,
+                    )
+                resolved_vlans = result_val
+
+            # Resolve default VLAN number if provided separately
+            resolved_default = None
+            if default_vlan is not None:
+                success, result_val = resolve_vlan_number(url, session, default_vlan)
+                if not success:
+                    module.fail_json(
+                        msg=f"error resolving default VLAN: {result_val}",
+                        **result,
+                    )
+                resolved_default = result_val
+
+            # Build the resolved retreat_config dict
+            resolved_retreat_config = {}
+            for key in ["enabled", "force", "mode", "receive"]:
+                if key in retreat_config:
+                    resolved_retreat_config[key] = retreat_config[key]
+            if vlans_list:
+                resolved_retreat_config["vlans"] = resolved_vlans
+            elif default_vlan is not None:
+                # If only default is provided but no vlans, we need at least one vlan
+                # Use the resolved default as the only vlan
+                resolved_retreat_config["vlans"] = [resolved_default]
+            if resolved_default is not None:
+                resolved_retreat_config["default"] = resolved_default
+
+            retreat_config = resolved_retreat_config
+
         data = dict(
             id=None,
             mac=module.params["mac"],
             desc=module.params["desc"],
             commit_config=commit_config,
+            retreat_config=retreat_config,
         )
 
         if item is None:
