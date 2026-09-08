@@ -41,3 +41,15 @@ releases:
           name: install_with_docker
           namespace: null
     release_date: "2026-09-06"
+  1.1.0:
+    changes:
+      minor_changes:
+        - added commit_config parameter to module device
+        - added retreat_config parameter to module device
+        - updated role basic_config to be able to utilize commit_config and retreat_config
+      release_summary: "expanded device configuration options
+
+        "
+    fragments:
+      - v1.1.0.yml
+    release_date: "2026-09-09"

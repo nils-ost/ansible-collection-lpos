@@ -2,16 +2,37 @@
 
 **Topics**
 
-- <a href="#v1-0-0">v1\.0\.0</a>
+- <a href="#v1-1-0">v1\.1\.0</a>
   - <a href="#release-summary">Release Summary</a>
+  - <a href="#minor-changes">Minor Changes</a>
+- <a href="#v1-0-0">v1\.0\.0</a>
+  - <a href="#release-summary-1">Release Summary</a>
   - <a href="#new-modules">New Modules</a>
   - <a href="#new-roles">New Roles</a>
+
+<a id="v1-1-0"></a>
+
+## v1\.1\.0
+
+<a id="release-summary"></a>
+
+### Release Summary
+
+expanded device configuration options
+
+<a id="minor-changes"></a>
+
+### Minor Changes
+
+- added commit_config parameter to module device
+- added retreat_config parameter to module device
+- updated role basic_config to be able to utilize commit_config and retreat_config
 
 <a id="v1-0-0"></a>
 
 ## v1\.0\.0
 
-<a id="release-summary"></a>
+<a id="release-summary-1"></a>
 
 ### Release Summary
 

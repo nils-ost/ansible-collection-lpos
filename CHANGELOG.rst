@@ -4,6 +4,21 @@ nils\_ost LPOS Collection Release Notes
 
 .. contents:: Topics
 
+v1.1.0
+======
+
+Release Summary
+---------------
+
+expanded device configuration options
+
+Minor Changes
+-------------
+
+- added commit_config parameter to module device
+- added retreat_config parameter to module device
+- updated role basic_config to be able to utilize commit_config and retreat_config
+
 v1.0.0
 ======
 
